@@ -4,7 +4,10 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 notesRouter.get('/', async (request, response) => {
-  const notes = await Note.find({}).populate('user', { username: 1, name: 1 })
+  const notes = await Note.find({}).populate('user', {
+    username: 1,
+    name: 1,
+  })
   response.json(notes)
 })
 
@@ -19,7 +22,10 @@ notesRouter.get('/:id', async (request, response) => {
 
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+  if (
+    authorization &&
+    authorization.toLowerCase().startsWith('bearer ')
+  ) {
     return authorization.substring(7)
   }
 
@@ -31,8 +37,10 @@ notesRouter.post('/', async (request, response) => {
   const token = getTokenFrom(request)
   const decodedToken = jwt.verify(token, process.env.SECRET)
 
-  if(!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  if (!token || !decodedToken.id) {
+    return response
+      .status(401)
+      .json({ error: 'Token missing or invalid' })
   }
 
   const user = await User.findById(decodedToken.id)
@@ -56,15 +64,24 @@ notesRouter.delete('/:id', async (request, response) => {
   response.status(204).end()
 })
 
-notesRouter.put('/:id', (request, response, next) => {
+notesRouter.put('/:id', async (request, response, next) => {
   const id = request.params.id
   const note = request.body
 
-  Note.findByIdAndUpdate(id, note, { new: true })
-    .then(updatedNote => {
-      response.json(updatedNote)
-    })
-    .catch(error => next(error))
+  try {
+    const updatedNote = await Note.findByIdAndUpdate(id, note, {
+      new: true,
+    }).populate('user', { username: 1, name: 1 })
+    response.json(updatedNote)
+  } catch (exception) {
+    next(exception)
+  }
+
+  // Note.findByIdAndUpdate(id, note, { new: true })
+  //   .then(updatedNote => {
+  //     response.json(updatedNote)
+  //   })
+  //   .catch(error => next(error))
 })
 
 module.exports = notesRouter
