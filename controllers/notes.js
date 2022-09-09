@@ -7,6 +7,7 @@ notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', {
     username: 1,
     name: 1,
+    lastname: 1,
   })
   response.json(notes)
 })
@@ -22,6 +23,7 @@ notesRouter.get('/:id', async (request, response) => {
 
 const getTokenFrom = request => {
   const authorization = request.get('authorization')
+
   if (
     authorization &&
     authorization.toLowerCase().startsWith('bearer ')
@@ -32,8 +34,7 @@ const getTokenFrom = request => {
   return null
 }
 
-notesRouter.post('/', async (request, response) => {
-  const body = request.body
+const verifyUser = async (request, response) => {
   const token = getTokenFrom(request)
   const decodedToken = jwt.verify(token, process.env.SECRET)
 
@@ -44,44 +45,68 @@ notesRouter.post('/', async (request, response) => {
   }
 
   const user = await User.findById(decodedToken.id)
+  return user
+}
+
+notesRouter.post('/', async (request, response) => {
+  const { content } = request.body
+  const user = await verifyUser(request, response)
 
   const note = new Note({
-    content: body.content,
-    important: body.important || false,
+    content,
     date: new Date(),
     user: user._id,
   })
 
   const savedNote = await note.save()
-  user.notes = user.notes.concat(savedNote._id)
+
+  user.notes = user.notes.concat(savedNote)
   await user.save()
 
-  response.json(savedNote)
-})
+  const populateNote = await savedNote.populate('user', {
+    username: 1,
+    name: 1,
+    lastname: 1,
+  })
 
-notesRouter.delete('/:id', async (request, response) => {
-  await Note.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+  response.json(populateNote)
 })
 
 notesRouter.put('/:id', async (request, response, next) => {
+  const user = await verifyUser(request, response)
+
   const id = request.params.id
-  const note = request.body
+  const note = await Note.findById(id)
+
+  const isFavorite = note.favorites.includes(user._id)
+
+  if (isFavorite) {
+    const newFavorites = note.favorites.filter(
+      userId => JSON.stringify(userId) !== JSON.stringify(user._id)
+    )
+
+    const newUserFavoriteNotes = user.favoriteNotes.filter(note => {
+      return note !== id
+    })
+
+    note.favorites = newFavorites
+    user.favoriteNotes = newUserFavoriteNotes
+  } else {
+    note.favorites = [...note.favorites, user._id]
+    user.favoriteNotes = [...user.favoriteNotes, id]
+  }
 
   try {
     const updatedNote = await Note.findByIdAndUpdate(id, note, {
       new: true,
-    }).populate('user', { username: 1, name: 1 })
+    }).populate('user', { username: 1, name: 1, lastname: 1 })
+
+    await user.save()
+
     response.json(updatedNote)
   } catch (exception) {
     next(exception)
   }
-
-  // Note.findByIdAndUpdate(id, note, { new: true })
-  //   .then(updatedNote => {
-  //     response.json(updatedNote)
-  //   })
-  //   .catch(error => next(error))
 })
 
 module.exports = notesRouter

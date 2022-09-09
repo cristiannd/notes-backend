@@ -5,9 +5,26 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
+    required: true,
+    minlength: 5,
   },
-  name: String,
-  passwordHash: String,
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
+  lastname: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
+  passwordHash: {
+    type: String,
+    required: true,
+  },
+  favoriteNotes: {
+    type: Array,
+  },
   notes: [
     {
       type: mongoose.Schema.Types.ObjectId,
