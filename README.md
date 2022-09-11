@@ -1,32 +1,105 @@
-# Aplicación de notas (backend)
-Este es el repositorio encargado de la parte del __backend__ de la aplicación de notas. Esta aplicación permite iniciar sesión con un usuario válido, y guardar notas que son procesadas y almacenadas en una base de datos.
-La aplicación está desarrollada con [NodeJS](https://nodejs.org/es/), con la ayuda de [ExpressJS](https://expressjs.com/es/).
-
-## Estructura de carpetas
+<a name="readme-top"></a>
+<div align="center">
+    <h1>postIT</h1>
+</div>
+ 
+The app is a small social media, inspired by [Twitter](https://twitter.com/), where the tweets are replaced with short notes. You can give a _favorite_ to other users’ notes and even your own. As well you have the possibility to filter your notes or your favorite ones.
+<br>
+ 
+<details>
+  <summary>Index</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About the project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#features">Features</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#folder-structure">Folder structure</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+ 
+<br>
+ 
+## About the project
+The purpose of the creation of the application was learning and improving the use of different technologies for the frontend and the backend.
+<br>
+This is the repository of the _backend_. Here you can access the repository of the frontend -> [frontend][frontend-url].
+ 
+### Built With
+- NodeJS
+- Express
+- MongoDB
+- Mongoose
+- JWT
+ 
+### Features
+- Create a user’s account.
+- Log in with a validated account.
+- Create a note.
+- Give a _favorite_ to a note.
+- See all the notes from different users.
+- See the created notes.
+- See your favorite notes.
+ 
+<br>
+ 
+## Getting started
+### Installation
+1. Clone the repo
+    ```sh
+    git clone https://github.com/cristiannd/notes-backend.git
+    ```
+2. Change the current working directory to the folder
+    ```sh
+    cd notes-backend
+    ```
+3. Install NPM packages
+    ```sh
+    npm install
+    ```
+4. Enter your MONGO key in `utils/config.js`
+    ```js
+    let MONGODB_URI='ENTER YOUR MONGO API KEY'
+    ```
+5. Start API
+    ```sh
+    npm start
+    ```
+ 
+<br>
+ 
+## Folder structure
 ~~~
+.
 ├── index.js
 ├── app.js
-├── build
-│   └── ...
 ├── controllers
 │   └── ...
 ├── models
 │   └── ...
 ├── utils
-│   ├── config.js
-│   ├── logger.js
-│   └── middleware.js
+│   └── ...
 └── tests
     ├── test_helper.js
     └── ...
 ~~~
-
-## Testing
-Los test unitarios y de integración se realizan con [JEST](https://jestjs.io/) y [SuperTest](https://www.npmjs.com/package/supertest). Los test end to end realizados con [Cypress](https://www.cypress.io/) se encuentran en el repositorio del [frontend](https://github.com/cristiannd/notes-frontend).
-
-## MongoDB
-La base de datos que se utiliza para guardar la información es [MongoDB](https://www.mongodb.com/). Con la ayuda de la biblioteca [Mongoose](https://mongoosejs.com/) se realizan todas las interacciones con la base de de datos. También se utiliza [mongoose-unique-validator](https://www.npmjs.com/package/mongoose-unique-validator) para realizar validaciones de datos que evitan que se almacene información incompleta o no deseada.
-
-## Interactuando con la aplicación
-Para utilizar la aplicación es necesario tener un usuario válido. Ese usuario tendrá almacenada la contraseña encriptada en la base de datos con la ayuda de la biblioteca [bcrypt](https://www.npmjs.com/package/bcrypt).
-De esta manera, una vez iniciado sesión, el usuario obtendrá un token único generado con [jsonwebtoken](https://jwt.io/), el cual le dará permisos para crear una nueva nota y editarla.
+ 
+<br>
+ 
+## Contact
+- LinkedIn: [/in/cristian-donalicio](https://www.linkedin.com/in/cristian-donalicio/)
+- Email: cristian.donalicio@gmail.com
+ 
+<p align="right"><a href="#readme-top">↑ back to the top</a></p>
+ 
+<!-- LINKS -->
+[frontend-url]: https://github.com/cristiannd/notes-frontend
