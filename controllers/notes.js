@@ -2,6 +2,7 @@ const notesRouter = require('express').Router()
 const Note = require('../models/note')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', {
@@ -36,7 +37,7 @@ const getTokenFrom = request => {
 
 const verifyUser = async (request, response) => {
   const token = getTokenFrom(request)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(token, config.SECRET)
 
   if (!token || !decodedToken.id) {
     return response
