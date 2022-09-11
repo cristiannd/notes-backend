@@ -24,6 +24,16 @@ usersRouter.get('/:id', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, lastname, password } = request.body
 
+  const minLengthPassword = 8
+
+  if (password.length < minLengthPassword) {
+    return response
+      .status(400)
+      .json({
+        error: `The password is not long enough, you need at least ${minLengthPassword} characters`,
+      })
+  }
+
   const passwordHash = await bcrypt.hash(password, 10)
 
   const user = new User({
