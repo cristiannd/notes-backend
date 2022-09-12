@@ -9,6 +9,7 @@ const loginRouter = require('./controllers/login')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
+const path = require('path')
 
 logger.info('connecting to server')
 
@@ -23,21 +24,22 @@ mongoose
 
 app.use(cors())
 app.use(express.static('build'))
-console.log('Build 1')
 app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+})
 
 if(process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing')
   app.use('/api/testing', testingRouter)
 }
 
-app.use('/*', express.static('build'))
-console.log('Build 2')
+// app.use('/*', express.static('build'))
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
