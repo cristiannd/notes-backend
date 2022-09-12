@@ -22,9 +22,8 @@ mongoose
   })
 
 app.use(cors())
-// app.use(express.static('build'))
-app.use('/*', express.static('build'))
-
+app.use(express.static('build'))
+console.log('Build 1')
 app.use(express.json())
 app.use(middleware.requestLogger)
 
@@ -37,7 +36,8 @@ if(process.env.NODE_ENV === 'test') {
   app.use('/api/testing', testingRouter)
 }
 
-// app.use('/*', express.static('build'))
+app.use('/*', express.static('build'))
+console.log('Build 2')
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
