@@ -1,6 +1,7 @@
 <a name="readme-top"></a>
 <div align="center">
     <h1>postIT</h1>
+    <img src="https://github.com/cristiannd/notes-frontend/blob/main/src/assets/images/home-image.png" title="Project's image" />
 </div>
  
 The app is a small social media, inspired by [Twitter](https://twitter.com/), where the tweets are replaced with short notes. You can give a _favorite_ to other users’ notes and even your own. As well you have the possibility to filter your notes or your favorite ones.
